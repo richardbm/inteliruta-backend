@@ -1,0 +1,7 @@
+*.pyc
+media/
+*/.env
+.idea/
+*.log
+.vagrant/
+.DS_Store
