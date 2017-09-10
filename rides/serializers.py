@@ -96,7 +96,7 @@ class RidesSerializer(serializers.ModelSerializer):
 
 class DemandSerializer(serializers.ModelSerializer):
     departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
-    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
+    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z',allow_null=True)
     departure_address = AddressSerializer()
     arrival_address = AddressSerializer()
     condition_display = serializers.SerializerMethodField()
