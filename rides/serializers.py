@@ -81,3 +81,54 @@ class RidesSerializer(serializers.ModelSerializer):
 
 
 
+class DemandSerializer(serializers.ModelSerializer):
+    departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
+    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
+    departure_address = AddressSerializer()
+    arrival_address = AddressSerializer()
+    condition_display = serializers.SerializerMethodField()
+    status_display = serializers.SerializerMethodField()
+    owner = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    def get_condition_display(self, obj):
+        return obj.get_condition_display()
+
+    def get_status_display(self, obj):
+        return obj.get_status_display()
+
+    class Meta:
+        model = rides_models.Demand
+        fields = '__all__'
+
+    def create(self, validated_data):
+        departure_address_data = validated_data.pop("departure_address")
+        arrival_address_data = validated_data.pop("arrival_address")
+        departure_address = AddressSerializer(data=departure_address_data)
+        arrival_address = AddressSerializer(data=arrival_address_data)
+        departure_address.is_valid()
+        arrival_address.is_valid()
+        departure_address.save()
+        arrival_address.save()
+        validated_data["departure_address"] = departure_address.instance
+        validated_data["arrival_address"] = arrival_address.instance
+        instance = super(DemandSerializer, self).create(validated_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        departure_address_data = validated_data.pop("departure_address")
+        arrival_address_data = validated_data.pop("arrival_address")
+        departure_address = AddressSerializer(instance.departure_address,
+                                              data=departure_address_data)
+        arrival_address = AddressSerializer(instance.arrival_address,
+                                            data=arrival_address_data)
+        departure_address.is_valid()
+        arrival_address.is_valid()
+        departure_address.save()
+        arrival_address.save()
+        instance = super(DemandSerializer, self).update(instance, validated_data)
+        return instance
+
+
+
