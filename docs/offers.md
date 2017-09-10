@@ -129,3 +129,15 @@ PUT /offers/1/
     "demand_id": 24
 }
 ```
+
+
+
+Solicitar un puesto en la oferta
+
+POST /offers/1/request/
+
+```
+{
+    "text": "Texto"
+}
+```
