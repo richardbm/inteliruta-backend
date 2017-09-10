@@ -30,12 +30,16 @@ class RidesSerializer(serializers.ModelSerializer):
     vehicle_id = serializers.IntegerField(required=True, write_only=True)
     demand_id = serializers.IntegerField(required=False, write_only=True)
     status_display = serializers.SerializerMethodField()
+    type_display = serializers.SerializerMethodField()
     owner = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
 
     def get_condition_display(self, obj):
         return obj.get_condition_display()
+
+    def get_type_display(self, obj):
+        return obj.get_offer_type_display()
 
     def get_status_display(self, obj):
         return obj.get_status_display()
