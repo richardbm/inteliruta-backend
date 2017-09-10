@@ -58,6 +58,7 @@ class Offer(models.Model):
     status = models.CharField(max_length=2, choices=STATUS_RIDE,
                               default=DISPONIBLE)
     owner = models.ForeignKey("accounts.User")
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "{0} - {1}".format(self.departure_address.text,
