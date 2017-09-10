@@ -138,7 +138,15 @@ GET /my-offers/1/
     },
     "condition": "PS",
     "price": "1234.00",
-    "seats": 24
+    "seats": 24,
+    "seats": 24,
+    "request_offer": [
+        {
+            "id": 1,
+            "date": "2017-09-09T18:30:00+0000",
+            "text": "texto"
+        }
+    ]
 }
 ```
 
