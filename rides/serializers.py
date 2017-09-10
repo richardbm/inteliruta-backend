@@ -22,7 +22,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class RidesSerializer(serializers.ModelSerializer):
     departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
-    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
+    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z', allow_null=True)
     departure_address = AddressSerializer()
     arrival_address = AddressSerializer()
     condition_display = serializers.SerializerMethodField()
@@ -51,7 +51,7 @@ class RidesSerializer(serializers.ModelSerializer):
         if queryset.exists() is False:
             raise serializers.ValidationError("vehicle does not exists")
         return vehicle_id
-    
+
     def validate_demand_id(self, demand_id):
         try:
             rides_models.Demand.objects.get(id=demand_id)
@@ -93,10 +93,18 @@ class RidesSerializer(serializers.ModelSerializer):
         arrival_address.is_valid()
         departure_address.save()
         arrival_address.save()
-        rides_models.Demand.objects.get(id=demand_id)
         instance = super(RidesSerializer, self).update(instance, validated_data)
         return instance
 
+
+class RequestSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = rides_models.RequestPost
+        fields = ("id", "text", "owner", "date", "offer_id",)
 
 class DemandSerializer(serializers.ModelSerializer):
     departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
