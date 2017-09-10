@@ -82,3 +82,38 @@ class OffersViewSet(viewsets.ModelViewSet):
 
 
 
+class DemandsViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    List to view demands
+    """
+    queryset = rides_models.Demand.objects.all()
+    serializer_class = rides_serializers.DemandSerializer
+    permission_classes = (permissions.IsAuthenticated, IsUserActive,)
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,
+                       filters.OrderingFilter)
+    ordering = ("departure_date",)
+    search_fields = ('arrival_address__text', 'departure_address__text',)
+
+    def get_queryset(self):
+        queryset = self.queryset
+        queryset = queryset.filter(status=rides_models.DISPONIBLE)
+        return queryset
+
+
+class MyDemandsViewSet(viewsets.ModelViewSet):
+    """
+    List to view my Demands
+    """
+    queryset = rides_models.Demand.objects.all()
+    serializer_class = rides_serializers.DemandSerializer
+    permission_classes = (permissions.IsAuthenticated, IsUserActive,)
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,
+                       filters.OrderingFilter)
+    ordering = ("departure_date",)
+    search_fields = ('arrival_address__text', 'departure_address__text',)
+    filter_fields = ("status",)
+
+    def get_queryset(self):
+        queryset = self.queryset
+        queryset = queryset.filter(owner=self.request.user)
+        return queryset

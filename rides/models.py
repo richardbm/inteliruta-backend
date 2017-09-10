@@ -59,6 +59,27 @@ class Offer(models.Model):
                               default=DISPONIBLE)
     owner = models.ForeignKey("accounts.User")
     date = models.DateTimeField(auto_now_add=True)
+    demand = models.ForeignKey("rides.Demand", null=True, default=None, related_name="offers")
+    def __str__(self):
+        return "{0} - {1}".format(self.departure_address.text,
+                                  self.owner.get_full_name())
+
+
+class Demand(models.Model):
+    departure_address = models.ForeignKey("rides.Address",
+                                          related_name="departure_address")
+    arrival_address = models.ForeignKey("rides.Address",
+                                        related_name="departure_arrival")
+    departure_date = models.DateTimeField()
+    arrival_date = models.DateTimeField(blank=True, null=True)
+    condition = models.CharField(max_length=2, choices=CONDITION,
+                                 default=PEER_SEAT)
+
+    seats = models.IntegerField(null=True)
+    status = models.CharField(max_length=2, choices=STATUS_RIDE,
+                              default=DISPONIBLE)
+    owner = models.ForeignKey("accounts.User")
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "{0} - {1}".format(self.departure_address.text,
