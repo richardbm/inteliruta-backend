@@ -227,3 +227,17 @@ status = 200
 DELETE /my-offers/1/
 
 satus = 204
+
+**acceptar una oferta:**
+
+POST /my-offers/1/accept-request/
+
+**Response:**
+
+```
+{
+    "detail": "accepted"
+}
+```
+
+status = 201

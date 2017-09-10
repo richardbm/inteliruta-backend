@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rides import models as rides_models
 from utils4geek.base.serializers import DateTimeFieldWihTZ
-
+from accounts.serializers import ProfleSerializer
 
 class VehicleSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(
@@ -21,7 +21,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class RequestSerializer(serializers.ModelSerializer):
-    date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
+    date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z', read_only=True)
     owner = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
@@ -42,6 +42,7 @@ class RidesSerializer(serializers.ModelSerializer):
     status_display = serializers.SerializerMethodField()
     type_display = serializers.SerializerMethodField()
     request_offer = serializers.SerializerMethodField()
+    passenger = ProfleSerializer(many=True)
     owner = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )

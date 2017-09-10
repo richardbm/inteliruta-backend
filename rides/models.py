@@ -71,8 +71,10 @@ class Offer(models.Model):
     owner = models.ForeignKey("accounts.User")
     date = models.DateTimeField(auto_now_add=True)
     demand = models.ForeignKey("rides.Demand", null=True,
+                               blank=True,
                                default=None, related_name="offers")
     passenger = models.ManyToManyField("accounts.User",
+                                       blank=True, null=True,
                                        related_name="passenger_offer")
 
     def __str__(self):

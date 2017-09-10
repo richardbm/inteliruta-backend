@@ -44,6 +44,23 @@ class MyOffersViewSet(viewsets.ModelViewSet):
         queryset = queryset.filter(owner=self.request.user)
         return queryset
 
+    @detail_route(methods=["post"], permission_classes=permission_classes,
+                  url_path="accept-request")
+    def accept_request(self, request, *args, **kwargs):
+        instance = self.get_object()
+        request_id = request.data.get("request_id")
+        request_post = rides_models.RequestPost.objects.get(id=request_id)
+        instance.passenger.add(request_post.owner)
+        if instance.offer_type == rides_models.FULL_CAR:
+            instance.status = rides_models.RESERVADO
+        elif instance.passenger.count == instance.seats:
+            instance.status = rides_models.RESERVADO
+            instance.save()
+        data = {
+            "detail": "accepted"
+        }
+        return Response(data, status=201)
+
 
 class OffersViewSet(viewsets.ModelViewSet):
     """
