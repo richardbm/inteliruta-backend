@@ -70,16 +70,13 @@ class OffersViewSet(viewsets.ModelViewSet):
             "request": request
         }
         data = request.data.copy()
-        data['offer_id'] = instance
+        data['offer'] = instance.id
         request_post = rides_serializers.RequestSerializer(data=data,
                                                            context=context)
 
         request_post.is_valid(raise_exception=True)
         request_post.save()
         return Response(request_post.data, status=201)
-
-
-
 
 
 class DemandsViewSet(viewsets.ReadOnlyModelViewSet):

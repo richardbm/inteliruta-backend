@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='offer',
             name='demand',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='offers', to='rides.Demand'),
+            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='offers', to='rides.Demand'),
         ),
     ]

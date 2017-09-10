@@ -22,7 +22,6 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class RidesSerializer(serializers.ModelSerializer):
     departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
-    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z', allow_null=True)
     departure_address = AddressSerializer()
     arrival_address = AddressSerializer()
     condition_display = serializers.SerializerMethodField()
@@ -51,13 +50,13 @@ class RidesSerializer(serializers.ModelSerializer):
     def validate_demand_id(self, demand_id):
         try:
             rides_models.Demand.objects.get(id=demand_id)
-        except models.Demand.DoesNotExist:
+        except rides_models.Demand.DoesNotExist:
             raise serializers.ValidationError("demand does not exists")
         return demand_id
 
     class Meta:
         model = rides_models.Offer
-        fields = '__all__'
+        exclude = ('arrival_date',)
 
     def create(self, validated_data):
         departure_address_data = validated_data.pop("departure_address")
@@ -100,11 +99,11 @@ class RequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = rides_models.RequestPost
-        fields = ("id", "text", "owner", "date", "offer_id",)
+        fields = ("id", "text", "owner", "date", "offer",)
+
 
 class DemandSerializer(serializers.ModelSerializer):
     departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
-    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z',allow_null=True)
     departure_address = AddressSerializer()
     arrival_address = AddressSerializer()
     condition_display = serializers.SerializerMethodField()
@@ -122,7 +121,7 @@ class DemandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = rides_models.Demand
-        fields = '__all__'
+        exclude = ('arrival_date',)
 
     def create(self, validated_data):
         departure_address_data = validated_data.pop("departure_address")
