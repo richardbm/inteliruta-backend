@@ -16,8 +16,8 @@ class Vehicle(models.Model):
 
 
 class Address(models.Model):
-    latitude = models.CharField(max_length=20)
-    longitude = models.CharField(max_length=20)
+    latitude = models.CharField(max_length=20, blank=True)
+    longitude = models.CharField(max_length=20, blank=True)
     text = models.TextField(blank=True)
 
     def __str__(self):
@@ -39,7 +39,7 @@ class Offer(models.Model):
     arrival_address = models.ForeignKey("rides.Address",
                                         related_name="arrival")
     departure_date = models.DateTimeField()
-    arrival_date = models.DateTimeField
+    arrival_date = models.DateTimeField(blank=True, null=True)
     vehicle = models.ForeignKey("rides.Vehicle")
     condition = models.CharField(max_length=2, choices=CONDITION,
                                  default=PEER_SEAT)

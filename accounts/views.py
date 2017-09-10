@@ -136,45 +136,39 @@ class SignUpFacebook(views.APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
 
-        # si el usuario no existe pregunta si se admite registro. por defecto es permitido
+        logger.info(profile)
+        user = accounts_models.User()
+        user.facebook_id = profile["id"]
+        user.username = profile["id"]
+        user.first_name = profile["first_name"]
+        user.last_name = profile["last_name"]
+        user.hometown = profile["hometown"]["name"] if "hometown" in profile.keys() else ""
+        user.email = profile["email"] if 'email' in profile else str(profile['id'] + '@facebook.com')
+        try:
+            user.facebook_picture_url = profile['picture']['data']['url']
+        except KeyError as e:
+            logger.error("Error getting facebook profile picture from result: %s" % str(e))
+        except Exception as e:
+            logger.error("Error getting facebook profile picture: %s" % str(e))
 
-        if request.data.get("signup", True) is True:
-            logger.info(profile)
-            user = accounts_models.User()
-            user.facebook_id = profile["id"]
-            user.username = profile["id"]
-            user.first_name = profile["first_name"]
-            user.last_name = profile["last_name"]
-            user.hometown = profile["hometown"]["name"] if "hometown" in profile.keys() else ""
-            user.email = profile["email"] if 'email' in profile else str(profile['id'] + '@facebook.com')
-            try:
-                user.facebook_picture_url = profile['picture']['data']['url']
-            except KeyError as e:
-                logger.error("Error getting facebook profile picture from result: %s" % str(e))
-            except Exception as e:
-                logger.error("Error getting facebook profile picture: %s" % str(e))
+        user.save()
 
-            user.save()
-
-            token, created = Token.objects.get_or_create(user=user)
-            data = {
-                'registered': True,
-                'token': token.key,
-                'user': {
-                    "id": user.id,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "email": user.email,
-                    "is_staff": user.is_staff,
-                    "facebook_picture_url": user.facebook_picture_url,
-                    "hometown": user.hometown
-                }
-            }
-            return Response(data, status=status.HTTP_200_OK)
+        token, created = Token.objects.get_or_create(user=user)
         data = {
-            "registered": False
+            'registered': True,
+            'token': token.key,
+            'user': {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "is_staff": user.is_staff,
+                "facebook_picture_url": user.facebook_picture_url,
+                "hometown": user.hometown
+            }
         }
         return Response(data, status=status.HTTP_200_OK)
+
 
 class SignUpFacebookMobile(views.APIView):
     def post(self, request, format=None):
@@ -185,9 +179,6 @@ class SignUpFacebookMobile(views.APIView):
                         'fields=id,last_name,first_name,email,hometown,picture.type(normal)'
 
         # obtener nuevo access_token
-        redirect_uri = "https://zoniamusic.com/mobile/accounts/signup-facebook/" #request.data.get('redirectUri', None)
-        if redirect_uri is None:
-            return Response(_("Missing 'redirectUri' in request"), status=status.HTTP_400_BAD_REQUEST)
 
         access_token = request.data.get('access_token')
         if access_token is None or access_token == "":
@@ -227,45 +218,38 @@ class SignUpFacebookMobile(views.APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
 
-        # si el usuario no existe pregunta si se admite registro. por defecto es permitido
-        if request.data.get("signup", True) is True:
-            logger.info(profile)
-            user = accounts_models.User()
-            user.facebook_id = profile["id"]
-            user.username = profile["id"]
-            user.first_name = profile["first_name"]
-            user.last_name = profile["last_name"]
-            user.hometown = profile["hometown"]["name"] if "hometown" in profile.keys() else ""
-            user.email = profile["email"] if 'email' in profile else str(profile['id'] + '@facebook.com')
-            try:
-                user.facebook_picture_url = profile['picture']['data']['url']
-            except KeyError as e:
-                logger.error("Error getting facebook profile picture from result: %s" % str(e))
-            except Exception as e:
-                logger.error("Error getting facebook profile picture: %s" % str(e))
+        logger.info(profile)
+        user = accounts_models.User()
+        user.facebook_id = profile["id"]
+        user.username = profile["id"]
+        user.first_name = profile["first_name"]
+        user.last_name = profile["last_name"]
+        user.hometown = profile["hometown"]["name"] if "hometown" in profile.keys() else ""
+        user.email = profile["email"] if 'email' in profile else str(profile['id'] + '@facebook.com')
+        try:
+            user.facebook_picture_url = profile['picture']['data']['url']
+        except KeyError as e:
+            logger.error("Error getting facebook profile picture from result: %s" % str(e))
+        except Exception as e:
+            logger.error("Error getting facebook profile picture: %s" % str(e))
 
-            user.save()
+        user.save()
 
-            token, created = Token.objects.get_or_create(user=user)
-            data = {
-                'registered': True,
-                'token': token.key,
-                'user': {
-                    "id": user.id,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "email": user.email,
-                    "is_staff": user.is_staff,
-                    "facebook_picture_url": user.facebook_picture_url,
-                    "hometown": user.hometown
-                }
-            }
-            return Response(data, status=status.HTTP_200_OK)
+        token, created = Token.objects.get_or_create(user=user)
         data = {
-            "registered": False
+            'registered': True,
+            'token': token.key,
+            'user': {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "is_staff": user.is_staff,
+                "facebook_picture_url": user.facebook_picture_url,
+                "hometown": user.hometown
+            }
         }
         return Response(data, status=status.HTTP_200_OK)
-
 
 class LoginFacebook(views.APIView):
     def post(self, request, format=None):

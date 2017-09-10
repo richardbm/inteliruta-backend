@@ -32,6 +32,7 @@ class TestOffer(APITestCase):
         self.c.force_authenticate(user)
 
         data = {
+            "id": vehicle.id,
             "brand": vehicle.brand,
             "model": vehicle.model,
             "year": vehicle.year,
