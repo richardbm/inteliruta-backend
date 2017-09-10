@@ -16,9 +16,17 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from accounts import views as accounts_views
+from rides import views as rides_views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+
+router.register("my-vehicles", rides_views.MyVehiclesViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('accounts.urls')),
     url(r'^mobile/accounts/signup-facebook', accounts_views.SignUpFacebookMobile.as_view()),
+    url(r'^', include(router.urls)),
+
 ]
