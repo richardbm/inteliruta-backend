@@ -72,6 +72,15 @@ status = 200
 
 PUT /demands/1/
 
+
+**Request:**
+
+```
+{
+    "accepted_offer_id": 24
+}
+```
+
 **Response:**
 
 ```

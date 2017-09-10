@@ -60,12 +60,15 @@ class TestDemand(APITestCase):
         user = mommy.make("accounts.user")
         demand = mommy.make("rides.demand", owner=user,
                              _fill_optional=True)
+        offer = mommy.make("rides.offer", owner=user,
+                             _fill_optional=True)
         vehicle = mommy.make("rides.vehicle", owner=user,
                              _fill_optional=True)
 
         self.c.force_authenticate(user)
 
         data = {
+            "accepted_offer_id":offer.id,
             "departure_address": OrderedDict({
                 "latitude": "192.168.32.12",
                 "longitude": "168.158.23.21",

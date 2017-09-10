@@ -39,6 +39,7 @@ class RidesSerializer(serializers.ModelSerializer):
     vehicle = VehicleSerializer(read_only=True)
     vehicle_id = serializers.IntegerField(required=True, write_only=True)
     demand_id = serializers.IntegerField(required=False, write_only=True)
+    accepted_offer_id = serializers.IntegerField(required=False, write_only=True)
     status_display = serializers.SerializerMethodField()
     type_display = serializers.SerializerMethodField()
     request_offer = serializers.SerializerMethodField()
@@ -98,9 +99,19 @@ class RidesSerializer(serializers.ModelSerializer):
         departure_address_data = validated_data.pop("departure_address")
         arrival_address_data = validated_data.pop("arrival_address")
         demand_id = validated_data.pop("demand_id")
-        demand = rides_models.Demand.objects.get(id=demand_id)
-        if demand:
+        if demand_id:
+            demand = rides_models.Demand.objects.get(id=demand_id)
             instance.demand = demand
+
+        accepted_offer_id = validated_data.pop("accepted_offer_id")
+        if accepted_ride_id:
+            offer = rides_models.Offer.objects.get(id=accepted_offer_id)
+            offer.status = rides_models.RESERVADO
+            offer.passenger.add(instance.owner)
+            offer.save()
+
+
+        
         departure_address = AddressSerializer(instance.departure_address,
                                               data=departure_address_data)
         arrival_address = AddressSerializer(instance.arrival_address,
