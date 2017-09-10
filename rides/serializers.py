@@ -22,7 +22,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class RidesSerializer(serializers.ModelSerializer):
     departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
-    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
+    arrival_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z', allow_null=True)
     departure_address = AddressSerializer()
     arrival_address = AddressSerializer()
     condition_display = serializers.SerializerMethodField()
@@ -80,4 +80,11 @@ class RidesSerializer(serializers.ModelSerializer):
         return instance
 
 
+class RequestSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
+    class Meta:
+        model = rides_models.RequestPost
+        fields = ("id", "text", "owner", "date", "offer_id",)

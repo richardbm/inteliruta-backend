@@ -63,3 +63,9 @@ class Offer(models.Model):
     def __str__(self):
         return "{0} - {1}".format(self.departure_address.text,
                                   self.owner.get_full_name())
+
+class RequestPost(models.Model):
+    text = models.TextField()
+    owner = models.ForeignKey("accounts.User")
+    offer = models.ForeignKey("rides.Offer")
+    date = models.DateTimeField(auto_now_add=True)

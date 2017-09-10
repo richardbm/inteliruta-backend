@@ -21,6 +21,6 @@ class TestResponseOffer(APITestCase):
         }
 
         response = self.c.post("/offers/{}/request/".format(offer.id), data)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 201, response.data)
         self.assertDictEqual.__self__.maxDiff = None
 

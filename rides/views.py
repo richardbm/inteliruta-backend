@@ -3,6 +3,7 @@ from rides import models as rides_models
 from rides import serializers as rides_serializers
 from rest_framework import permissions, viewsets, filters
 from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 from utils4geek.base.permissions import IsUserActive
 
 
@@ -44,7 +45,7 @@ class MyOffersViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class OffersViewSet(viewsets.ReadOnlyModelViewSet):
+class OffersViewSet(viewsets.ModelViewSet):
     """
     List to view offers
     """
@@ -55,6 +56,7 @@ class OffersViewSet(viewsets.ReadOnlyModelViewSet):
                        filters.OrderingFilter)
     ordering = ("departure_date",)
     search_fields = ('arrival_address__text', 'departure_address__text',)
+    http_method_names = ["get", "post"]
 
     def get_queryset(self):
         queryset = super(OffersViewSet, self).get_queryset()
@@ -64,6 +66,18 @@ class OffersViewSet(viewsets.ReadOnlyModelViewSet):
     @detail_route(methods=["post"], permission_classes=permission_classes)
     def request(self, request, *args, **kwargs):
         instance = self.get_object()
+        context = {
+            "request": request
+        }
+        data = request.data.copy()
+        data['offer_id'] = instance
+        request_post = rides_serializers.RequestSerializer(data=data,
+                                                           context=context)
+
+        request_post.is_valid(raise_exception=True)
+        request_post.save()
+        return Response(request_post.data, status=201)
+
 
 
 
