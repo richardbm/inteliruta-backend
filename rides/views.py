@@ -58,7 +58,7 @@ class OffersViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = super(OffersViewSet, self).get_queryset()
-        queryset = queryset.filter(status=rides_models.DISPONIBLE)
+        queryset = queryset.filter(status=rides_models.DISPONIBLE, offer_type=rides_models.PUBLICA)
         return queryset
 
     @detail_route(methods=["post"], permission_classes=permission_classes)
