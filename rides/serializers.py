@@ -20,6 +20,17 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ('latitude', 'longitude', 'text',)
 
 
+class RequestSerializer(serializers.ModelSerializer):
+    date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
+    owner = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = rides_models.RequestPost
+        fields = ("id", "text", "owner", "date", "offer",)
+
+
 class RidesSerializer(serializers.ModelSerializer):
     departure_date = DateTimeFieldWihTZ(format='%Y-%m-%dT%H:%M:%S%z')
     departure_address = AddressSerializer()
@@ -30,9 +41,15 @@ class RidesSerializer(serializers.ModelSerializer):
     demand_id = serializers.IntegerField(required=False, write_only=True)
     status_display = serializers.SerializerMethodField()
     type_display = serializers.SerializerMethodField()
+    request_offer = serializers.SerializerMethodField()
     owner = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
+
+    def get_request_offer(self, obj):
+        request_offer = obj.request_offer.all()
+        data = RequestSerializer(request_offer, many=True).data
+        return data
 
     def get_condition_display(self, obj):
         return obj.get_condition_display()
@@ -94,16 +111,6 @@ class RidesSerializer(serializers.ModelSerializer):
         arrival_address.save()
         instance = super(RidesSerializer, self).update(instance, validated_data)
         return instance
-
-
-class RequestSerializer(serializers.ModelSerializer):
-    owner = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
-
-    class Meta:
-        model = rides_models.RequestPost
-        fields = ("id", "text", "owner", "date", "offer",)
 
 
 class DemandSerializer(serializers.ModelSerializer):
