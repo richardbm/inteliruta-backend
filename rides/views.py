@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rides import models as rides_models
 from rides import serializers as rides_serializers
 from rest_framework import permissions, viewsets, filters
+from rest_framework.decorators import detail_route
 from utils4geek.base.permissions import IsUserActive
 
 
@@ -12,7 +13,7 @@ class MyVehiclesViewSet(viewsets.ModelViewSet):
     queryset = rides_models.Vehicle.objects.all()
     serializer_class = rides_serializers.VehicleSerializer
     permission_classes = (permissions.IsAuthenticated, IsUserActive,)
-    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,
                        filters.OrderingFilter)
     ordering = ("model",)
     search_fields = ('model', 'brand',)
@@ -31,7 +32,7 @@ class MyOffersViewSet(viewsets.ModelViewSet):
     queryset = rides_models.Offer.objects.all()
     serializer_class = rides_serializers.RidesSerializer
     permission_classes = (permissions.IsAuthenticated, IsUserActive,)
-    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,
                        filters.OrderingFilter)
     ordering = ("departure_date",)
     search_fields = ('arrival_address__text', 'departure_address__text',)
@@ -50,7 +51,7 @@ class OffersViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = rides_models.Offer.objects.all()
     serializer_class = rides_serializers.RidesSerializer
     permission_classes = (permissions.IsAuthenticated, IsUserActive,)
-    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,
                        filters.OrderingFilter)
     ordering = ("departure_date",)
     search_fields = ('arrival_address__text', 'departure_address__text',)
@@ -59,6 +60,11 @@ class OffersViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = super(OffersViewSet, self).get_queryset()
         queryset = queryset.filter(status=rides_models.DISPONIBLE)
         return queryset
+
+    @detail_route(methods=["post"], permission_classes=permission_classes)
+    def request(self, request, *args, **kwargs):
+        instance = self.get_object()
+
 
 
 

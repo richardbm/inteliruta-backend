@@ -2,7 +2,7 @@
 
 * [Login](/docs/login.md)
 
-* [Vehicles](/docs/vehicle.md)
+* [Vehicles](/docs/vehicles.md)
 
 * [My Offers](/docs/my_offers.md)
 
