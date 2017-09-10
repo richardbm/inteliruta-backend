@@ -22,6 +22,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 
 router.register("my-vehicles", rides_views.MyVehiclesViewSet)
+router.register("my-offers", rides_views.MyOffersViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

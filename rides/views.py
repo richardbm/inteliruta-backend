@@ -11,11 +11,26 @@ class MyVehiclesViewSet(ModelCrudViewSet):
     List to view my vechiles
     """
     queryset = rides_models.Vehicle.objects.all()
-    serializer_class = rides_serializers.RidesSerializer
+    serializer_class = rides_serializers.VehicleSerializer
     permission_classes = (permissions.IsAuthenticated, IsUserActive,)
 
     def get_queryset(self):
         queryset = super(MyVehiclesViewSet, self).get_queryset()
+        queryset = queryset.filter(owner=self.request.user)
+        return queryset
+
+
+
+class MyOffersViewSet(ModelCrudViewSet):
+    """
+    List to view my offers
+    """
+    queryset = rides_models.Vehicle.objects.all()
+    serializer_class = rides_serializers.RidesSerializer
+    permission_classes = (permissions.IsAuthenticated, IsUserActive,)
+
+    def get_queryset(self):
+        queryset = super(MyOffersViewSet, self).get_queryset()
         queryset = queryset.filter(owner=self.request.user)
         return queryset
 
