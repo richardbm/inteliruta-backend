@@ -32,6 +32,16 @@ CONDITION = (
 
 )
 
+DISPONIBLE = "Di"
+RESERVADO = "Re"
+CANCELADO = "Ca"
+REALIZADO = "Re"
+STATUS_RIDE = (
+    (DISPONIBLE, _("Disponible")),
+    (RESERVADO, _("Reservado")),
+    (CANCELADO, _("Cancelado")),
+    (REALIZADO, _("Realizado")),
+)
 
 class Offer(models.Model):
     departure_address = models.ForeignKey("rides.Address",
@@ -45,6 +55,8 @@ class Offer(models.Model):
                                  default=PEER_SEAT)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     seats = models.IntegerField(null=True)
+    status = models.CharField(max_length=2, choices=STATUS_RIDE,
+                              default=DISPONIBLE)
     owner = models.ForeignKey("accounts.User")
 
     def __str__(self):

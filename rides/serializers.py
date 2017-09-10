@@ -28,12 +28,16 @@ class RidesSerializer(serializers.ModelSerializer):
     condition_display = serializers.SerializerMethodField()
     vehicle = VehicleSerializer(read_only=True)
     vehicle_id = serializers.IntegerField(required=True, write_only=True)
+    status_display = serializers.SerializerMethodField()
     owner = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
 
     def get_condition_display(self, obj):
         return obj.get_condition_display()
+
+    def get_status_display(self, obj):
+        return obj.get_status_display()
 
     def validate_vehicle_id(self, vehicle_id):
         Vehicle = rides_models.Vehicle

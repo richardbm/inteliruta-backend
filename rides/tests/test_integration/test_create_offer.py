@@ -96,6 +96,7 @@ class TestOffer(APITestCase):
             "seats": 24,
             "condition": "PS",
             "condition_display": "Por puesto",
+            "status_display": "Disponible",
             "price": 1234
         }
 
@@ -128,6 +129,7 @@ class TestOffer(APITestCase):
             "seats": 24,
             "condition": "PS",
             "condition_display": "Por puesto",
+            "status_display": "Disponible",
             "price": 1234.00
         }
 

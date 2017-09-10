@@ -35,4 +35,18 @@ class MyOffersViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class OffersViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    List to view offers
+    """
+    queryset = rides_models.Offer.objects.all()
+    serializer_class = rides_serializers.RidesSerializer
+    permission_classes = (permissions.IsAuthenticated, IsUserActive,)
+
+    def get_queryset(self):
+        queryset = super(OffersViewSet, self).get_queryset()
+        queryset = queryset.filter(status=rides_models.DISPONIBLE)
+        return queryset
+
+
 
