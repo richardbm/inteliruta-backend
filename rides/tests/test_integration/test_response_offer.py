@@ -25,3 +25,20 @@ class TestResponseOffer(APITestCase):
         self.assertEqual(response.status_code, 201, response.data)
         self.assertDictEqual.__self__.maxDiff = None
 
+    def test_accept_response_offer(self):
+        user = mommy.make("accounts.user")
+        offer = mommy.make("rides.offer", owner=user,
+                           status="Di",
+                             _fill_optional=True)
+        request_post = mommy.make("rides.requestpost", _fill_optional=True)
+
+        self.c.force_authenticate(user)
+
+        data = {
+            "text": "Puedes llevarme?"
+        }
+
+        response = self.c.post("/offers/{}/request/".format(offer.id), data)
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertDictEqual.__self__.maxDiff = None
+
