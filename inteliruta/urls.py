@@ -24,6 +24,8 @@ router = routers.DefaultRouter()
 router.register("my-vehicles", rides_views.MyVehiclesViewSet)
 router.register("my-offers", rides_views.MyOffersViewSet)
 router.register("offers", rides_views.OffersViewSet)
+router.register("my-demands", rides_views.MyDemandsViewSet)
+router.register("demands", rides_views.DemandsViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

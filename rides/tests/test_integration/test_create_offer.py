@@ -76,6 +76,8 @@ class TestOffer(APITestCase):
                              _fill_optional=True)
         vehicle = mommy.make("rides.vehicle", owner=user,
                              _fill_optional=True)
+        demand = mommy.make("rides.demand", owner=user,
+                             _fill_optional=True)
 
         self.c.force_authenticate(user)
 
@@ -93,6 +95,7 @@ class TestOffer(APITestCase):
                 "text": "calle 5 de julio con av delicias",
             }),
             "vehicle_id": vehicle.id,
+            "demand_id": demand.id,
             "seats": 24,
             "condition": "PS",
             "condition_display": "Por puesto",

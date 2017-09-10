@@ -28,6 +28,7 @@ class RidesSerializer(serializers.ModelSerializer):
     condition_display = serializers.SerializerMethodField()
     vehicle = VehicleSerializer(read_only=True)
     vehicle_id = serializers.IntegerField(required=True, write_only=True)
+    demand_id = serializers.IntegerField(required=False, write_only=True)
     status_display = serializers.SerializerMethodField()
     owner = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
@@ -46,6 +47,13 @@ class RidesSerializer(serializers.ModelSerializer):
         if queryset.exists() is False:
             raise serializers.ValidationError("vehicle does not exists")
         return vehicle_id
+    
+    def validate_demand_id(self, demand_id):
+        try:
+            rides_models.Demand.objects.get(id=demand_id)
+        except models.Demand.DoesNotExist:
+            raise serializers.ValidationError("demand does not exists")
+        return demand_id
 
     class Meta:
         model = rides_models.Offer
@@ -62,12 +70,17 @@ class RidesSerializer(serializers.ModelSerializer):
         arrival_address.save()
         validated_data["departure_address"] = departure_address.instance
         validated_data["arrival_address"] = arrival_address.instance
+
         instance = super(RidesSerializer, self).create(validated_data)
         return instance
 
     def update(self, instance, validated_data):
         departure_address_data = validated_data.pop("departure_address")
         arrival_address_data = validated_data.pop("arrival_address")
+        demand_id = validated_data.pop("demand_id")
+        demand = rides_models.Demand.objects.get(id=demand_id)
+        if demand:
+            instance.demand = demand
         departure_address = AddressSerializer(instance.departure_address,
                                               data=departure_address_data)
         arrival_address = AddressSerializer(instance.arrival_address,
@@ -76,9 +89,9 @@ class RidesSerializer(serializers.ModelSerializer):
         arrival_address.is_valid()
         departure_address.save()
         arrival_address.save()
+        rides_models.Demand.objects.get(id=demand_id)
         instance = super(RidesSerializer, self).update(instance, validated_data)
         return instance
-
 
 
 class DemandSerializer(serializers.ModelSerializer):
@@ -88,6 +101,7 @@ class DemandSerializer(serializers.ModelSerializer):
     arrival_address = AddressSerializer()
     condition_display = serializers.SerializerMethodField()
     status_display = serializers.SerializerMethodField()
+    offers = RidesSerializer(many=True, read_only=True)
     owner = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
@@ -129,6 +143,3 @@ class DemandSerializer(serializers.ModelSerializer):
         arrival_address.save()
         instance = super(DemandSerializer, self).update(instance, validated_data)
         return instance
-
-
-
