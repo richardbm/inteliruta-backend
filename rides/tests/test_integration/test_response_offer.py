@@ -12,6 +12,7 @@ class TestResponseOffer(APITestCase):
     def test_response_offer(self):
         user = mommy.make("accounts.user")
         offer = mommy.make("rides.offer", owner=user,
+                           status="Di",
                              _fill_optional=True)
 
         self.c.force_authenticate(user)
