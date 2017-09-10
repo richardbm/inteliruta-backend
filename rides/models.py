@@ -70,8 +70,12 @@ class Offer(models.Model):
                               default=PUBLICA)
     owner = models.ForeignKey("accounts.User")
     date = models.DateTimeField(auto_now_add=True)
-    demand = models.ForeignKey("rides.Demand", null=True, default=None, related_name="offers")
-    passenger = models.ManyToManyField("accounts.User", related_name="my_rides")
+    demand = models.ForeignKey("rides.Demand", null=True,
+                               blank=True,
+                               default=None, related_name="offers")
+    passenger = models.ManyToManyField("accounts.User",
+                                       blank=True, null=True,
+                                       related_name="passenger_offer")
 
     def __str__(self):
         return "{0} - {1}".format(self.departure_address.text,
