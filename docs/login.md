@@ -8,8 +8,8 @@ El login es con username y password
 
 El usuario por defecto es
 
-user: Master
-pass: Zonia123*
+user: 4geeks
+pass: 4geeks1o1
 
 **url:**
 
@@ -19,8 +19,8 @@ POST /accounts/login-admin/
 
 ```
 {
-    "username": "Master",
-    "password": "Zonia123*"
+    "username": "4geeks",
+    "password": "4geeks1o1*"
 }
 ```
 
@@ -36,11 +36,7 @@ status = 200
 
 **Login Con Facebook:**
 
-El login en Zonia solo se realiza con Facebook
-
-el client id de la app de facebook de Zonia en desarrollo es:
-
-1796631997252144
+El login en esta app solo se realiza con Facebook
 
 
 cuando se envia el campo signup: false solo permite realizar login, no registro
