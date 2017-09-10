@@ -43,6 +43,15 @@ STATUS_RIDE = (
     (REALIZADO, _("Realizado")),
 )
 
+
+PUBLICA = "PU"
+PRIVADA = "PR"
+OFFERT_TYPE = (
+    (PUBLICA, _("Publica")),
+    (PRIVADA, _("Privada")),
+)
+
+
 class Offer(models.Model):
     departure_address = models.ForeignKey("rides.Address",
                                           related_name="departure")
@@ -57,6 +66,8 @@ class Offer(models.Model):
     seats = models.IntegerField(null=True)
     status = models.CharField(max_length=2, choices=STATUS_RIDE,
                               default=DISPONIBLE)
+    offer_type = models.CharField(max_length=2, choices=OFFERT_TYPE,
+                              default=PUBLICA)
     owner = models.ForeignKey("accounts.User")
     date = models.DateTimeField(auto_now_add=True)
     demand = models.ForeignKey("rides.Demand", null=True, default=None, related_name="offers")
